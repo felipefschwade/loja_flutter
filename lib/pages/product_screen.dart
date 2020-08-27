@@ -4,6 +4,7 @@ import 'package:loja_flutter/data/cart_product.dart';
 import 'package:loja_flutter/data/product_data.dart';
 import 'package:loja_flutter/model/cart_model.dart';
 import 'package:loja_flutter/model/user_model.dart';
+import 'package:loja_flutter/pages/cart_screen.dart';
 import 'package:loja_flutter/pages/login_screen.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -115,8 +116,12 @@ class _ProductScreenState extends State<ProductScreen> {
                         cartProduct.size = size;
                         cartProduct.quantity = 1;
                         cartProduct.pid = product.id;
+                        cartProduct.category = product.category;
 
                         CartModel.of(context).addCartItem(cartProduct);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => CartScreen())
+                        );
                       } else {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => LoginScreen())
