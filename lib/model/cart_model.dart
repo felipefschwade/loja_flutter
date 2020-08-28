@@ -11,7 +11,11 @@ class CartModel extends Model {
 
   bool isLoading = false;
 
-  CartModel(this.user);
+  CartModel(this.user) {
+    if (this.user.isLoggedIn()) {
+      _loadCartItems();
+    }
+  }
 
   static CartModel of (BuildContext context) => ScopedModel.of<CartModel>(context);
 
@@ -20,7 +24,7 @@ class CartModel extends Model {
 
     Firestore.instance.collection("users")
       .document(user.firebaseUser.uid)
-      .collection('cart').add(item.toMap()).then((doc) => item.cid = doc.documentID);
+      .collection("cart").add(item.toMap()).then((doc) => item.cid = doc.documentID);
   
     notifyListeners();
   }
@@ -28,8 +32,32 @@ class CartModel extends Model {
   void removeCartItem(CartProduct item) {
     Firestore.instance.collection("users")
       .document(user.firebaseUser.uid)
-      .collection('cart').document(item.cid).delete();
+      .collection("cart").document(item.cid).delete();
     products.remove(item);
+    notifyListeners();
+  }
+
+  void decProdcut(CartProduct cartProduct) {
+    cartProduct.quantity--;
+    Firestore.instance.collection("users")
+      .document(user.firebaseUser.uid)
+      .collection("cart").document(cartProduct.cid).updateData(cartProduct.toMap());
+    notifyListeners();
+  }
+
+  void incProdcut(CartProduct cartProduct) {
+    cartProduct.quantity++;
+    Firestore.instance.collection("users")
+      .document(user.firebaseUser.uid)
+      .collection("cart").document(cartProduct.cid).updateData(cartProduct.toMap());
+    notifyListeners();
+  }
+
+  void _loadCartItems() async {
+    QuerySnapshot query = await Firestore.instance.collection("users")
+      .document(user.firebaseUser.uid)
+      .collection("cart").getDocuments();
+    products = query.documents.map((d) => CartProduct.fromDocument(d)).toList();
     notifyListeners();
   }
 

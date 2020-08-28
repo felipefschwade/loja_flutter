@@ -111,7 +111,6 @@ class _ProductScreenState extends State<ProductScreen> {
                   child: RaisedButton(
                     onPressed: size == null ? null : () {
                       if (UserModel.of(context).isLoggedIn()) {
-
                         CartProduct cartProduct = CartProduct();
                         cartProduct.size = size;
                         cartProduct.quantity = 1;

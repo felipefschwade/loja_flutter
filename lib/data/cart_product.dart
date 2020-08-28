@@ -18,6 +18,7 @@ class CartProduct {
     category = document.data["category"];
     quantity = document.data["quantity"];
     size = document.data["size"];
+    pid = document.data["pid"];
   }
 
   Map<String, dynamic> toMap() {

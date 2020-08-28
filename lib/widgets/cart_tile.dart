@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_flutter/data/cart_product.dart';
 import 'package:loja_flutter/data/product_data.dart';
+import 'package:loja_flutter/model/cart_model.dart';
 
 class CartTile extends StatelessWidget {
 
@@ -10,8 +11,78 @@ class CartTile extends StatelessWidget {
 
   CartTile(this.cartProduct);
 
-  Widget _buildContent() {
-
+  Widget _buildContent(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: 120,
+          child: Image.network(
+            cartProduct.productData.images[0],
+            fit: BoxFit.cover,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  cartProduct.productData.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.0
+                  ),
+                ),
+                Text(
+                  "Tamanho ${cartProduct.size}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Text(
+                  "R\$ ${cartProduct.productData.price.toStringAsFixed(2)}",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      color: Theme.of(context).primaryColor,
+                      icon: Icon(Icons.remove), 
+                      onPressed: cartProduct.quantity > 1 ? () {
+                        CartModel.of(context).decProdcut(cartProduct);
+                      } : null
+                    ),
+                    Text(cartProduct.quantity.toString()),
+                    IconButton(
+                      color: Theme.of(context).primaryColor,
+                      icon: Icon(Icons.add), 
+                      onPressed: () {
+                        CartModel.of(context).incProdcut(cartProduct);
+                      }
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        CartModel.of(context).removeCartItem(cartProduct);
+                      },
+                      child: Text("Remover"),
+                      textColor: Colors.grey[500],
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
+        ),
+      ],
+    );
   }
 
   @override
@@ -24,7 +95,7 @@ class CartTile extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               cartProduct.productData = ProductData.fromDocument(snapshot.data);
-              return _buildContent();
+              return _buildContent(context);
             } else {
               return Container(
                 height: 70.0,
@@ -33,9 +104,7 @@ class CartTile extends StatelessWidget {
               );
             }
           },
-        ) : _buildContent(),
+        ) : _buildContent(context)
     );
   }
-
-  _buildContent() {}
 }
