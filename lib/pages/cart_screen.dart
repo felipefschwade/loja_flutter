@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:loja_flutter/model/cart_model.dart';
 import 'package:loja_flutter/model/user_model.dart';
 import 'package:loja_flutter/pages/login_screen.dart';
+import 'package:loja_flutter/pages/order_screen.dart';
+import 'package:loja_flutter/widgets/cart_price.dart';
 import 'package:loja_flutter/widgets/cart_tile.dart';
+import 'package:loja_flutter/widgets/discount_card.dart';
+import 'package:loja_flutter/widgets/ship_card.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartScreen extends StatelessWidget {
@@ -86,7 +90,17 @@ class CartScreen extends StatelessWidget {
                   children: model.products.map((product) {
                     return CartTile(product);
                   }).toList(),
-                )
+                ),
+                DiscountCard(),
+                ShipCard(),
+                CartPrice(() async {
+                  String orderId = await model.finishOrder();
+                  if (orderId != null) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => OrderScreen(orderId))
+                    );
+                  }
+                })
               ],
             );
           }

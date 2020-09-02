@@ -4,6 +4,7 @@ import 'package:loja_flutter/widgets/cart_button.dart';
 import 'package:loja_flutter/widgets/custom_drawer.dart';
 
 import 'home_tab.dart';
+import 'orders_tab.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -30,7 +31,14 @@ class HomeScreen extends StatelessWidget {
           floatingActionButton: CartButton(),
         ),
         Container(color: Colors.blue),
-        Container(color: Colors.white),
+        Scaffold(
+          appBar: AppBar(
+            title: Text("Meus Pedidos"),
+            centerTitle: true,
+          ),
+          body: OrdersTab(),
+          drawer: CustomDrawer(_pageController),
+        )
       ],
     );
   }
