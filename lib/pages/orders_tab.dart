@@ -21,10 +21,11 @@ class OrdersTab extends StatelessWidget {
             if(!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             } else {
+              final list = snapshot.data.documents.reversed.toList();
               return ListView.builder(
-                itemCount: snapshot.data.documents.length,
+                itemCount: list.length,
                 itemBuilder: (context, i) {
-                  return OrderTile(snapshot.data.documents[i].documentID);
+                  return OrderTile(list[i].documentID);
                 },
               );
             }
